@@ -14,6 +14,13 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
+    const currentUserJSON = window.localStorage.getItem('currentBloglistUser')
+    
+    if (currentUserJSON) {
+      const user = JSON.parse(currentUserJSON)
+      setUser(user)
+    }
+
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
@@ -24,6 +31,9 @@ const App = () => {
 
     try {
       const user = await loginService.login({ username, password })
+
+      window.localStorage.setItem('currentBloglistUser', JSON.stringify(user))
+
       setUser(user)
       setUsername('')
       setPassword('')
