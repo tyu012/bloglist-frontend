@@ -3,8 +3,7 @@ import Blog from './Blog'
 
 const ActiveUserStatus = ({ user, logout }) => (
   <div>
-    <p>{user.name} logged in</p>
-    <button onClick={logout}>logout</button>
+    <p>{user.name} logged in<button onClick={logout}>logout</button></p>
   </div>
 )
 
@@ -13,7 +12,6 @@ const BlogList = props => {
 
   return (
     <div>
-      <h2>blogs</h2>
       <ActiveUserStatus
         user={user}
         logout={logout}
