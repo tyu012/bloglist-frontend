@@ -19,11 +19,14 @@ const App = () => {
     if (currentUserJSON) {
       const user = JSON.parse(currentUserJSON)
       setUser(user)
+      console.log('user found:', user.username)
+    } else {
+      console.log('user not found')
     }
 
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   const handleLogin = async event => {
@@ -42,11 +45,20 @@ const App = () => {
     }
   }
 
+  const logout = event => {
+    event.preventDefault()
+    console.log('logout')
+
+    setUser(null)
+    window.localStorage.removeItem('currentBloglistUser')
+  }
+
   return user ? 
     (
       <BlogList
         user={user}
         blogs={blogs}
+        logout={logout}
       />
     ) :
     (
