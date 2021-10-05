@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
@@ -7,6 +7,7 @@ import Notification from './components/Notification'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -15,11 +16,11 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   // blog submission
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [notification, setNotification] = useState({})
   const [showingNotification, setShowingNotification] = useState(false)
+
+  const newBlogFormTogglable = useRef()
+  const newBlogForm = useRef()
 
   useEffect(() => {
     const currentUserJSON = window.localStorage.getItem('currentBloglistUser')
@@ -70,28 +71,20 @@ const App = () => {
     event.preventDefault()
 
     setUser(null)
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-    
+    newBlogForm.current.setTitle('')
+    newBlogForm.current.setAuthor('')
+    newBlogForm.current.setUrl('')
+
     window.localStorage.removeItem('currentBloglistUser')
     showNotification({ success: true, text: 'logged out' })
   }
 
-  const handleBlogSubmission = async event => {
-    event.preventDefault()
-    const newBlog = {
-      title,
-      author,
-      url,
-      likes: 0,
-    }
-
+  const submitBlog = async newBlog => {
     try {
       const blog = await blogService.submit(newBlog)
       console.log('blog submitted', blog)
       setBlogs(blogs.concat(blog))
-      
+
       if (blog) {
         showNotification({ success: true, text: `${blog.title} added` })
       } else {
@@ -103,21 +96,16 @@ const App = () => {
     }
   }
 
+
   return user ?
     (
       <div>
         <h2>Blogs</h2>
         <Notification contents={notification} isShowing={showingNotification} />
-        <h3>Create new</h3>
-        <NewBlogForm
-          handleBlogSubmission={handleBlogSubmission}
-          title={title}
-          setTitle={setTitle}
-          author={author}
-          setAuthor={setAuthor}
-          url={url}
-          setUrl={setUrl}
-        />
+        <Togglable buttonLabel="create new blog" ref={newBlogFormTogglable}>
+          <h3>Create new</h3>
+          <NewBlogForm submitBlog={submitBlog} ref={newBlogForm} />
+        </Togglable>
         <BlogList
           user={user}
           blogs={blogs}
