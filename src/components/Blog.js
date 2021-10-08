@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, likeBlog }) => {
   const [detailed, setDetailed] = useState(false)
 
   const toggleDetail = event => {
     event.preventDefault()
     setDetailed(!detailed)
+  }
+  
+  const handleLike = async event => {
+    event.preventDefault()
+    await likeBlog(blog)
   }
 
   const showWhenDetailed = { display: detailed ? '' : 'none' }
@@ -31,7 +36,7 @@ const Blog = ({ blog }) => {
 
       <div style={showWhenDetailed}>
         likes {blog.likes}
-        <button onClick={event => event.preventDefault()}>like</button>
+        <button onClick={handleLike}>like</button>
       </div>
 
       <div style={showWhenDetailed}>

@@ -3,12 +3,6 @@ import React, { useState, useImperativeHandle } from 'react'
 const NewBlogForm = React.forwardRef((props, ref) => {
   const {
     submitBlog,
-    // title,
-    // setTitle,
-    // author,
-    // setAuthor,
-    // url,
-    // setUrl,
   } = props
 
   const [title, setTitle] = useState('')

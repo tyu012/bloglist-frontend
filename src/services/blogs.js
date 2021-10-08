@@ -19,4 +19,18 @@ const submit = async blog => {
   return response.data
 }
 
-export default { getAll, setToken, submit }
+const like = async blog => {
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  const newBlog = {
+    ...blog,
+    likes: blog.likes + 1,
+  }
+
+  const response = await axios.put(`${baseUrl}/${blog.id}`, newBlog, config)
+  return response.data
+}
+
+export default { getAll, setToken, submit, like }

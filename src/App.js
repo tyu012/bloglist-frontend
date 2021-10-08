@@ -96,6 +96,25 @@ const App = () => {
     }
   }
 
+  const likeBlog = async blog => {
+    try {
+      console.log(blogs)
+      const likedBlog = await blogService.like(blog)
+      console.log('blog liked', likedBlog)
+      const newBlogs = blogs.map(b => b === blog ? likedBlog : b)
+      setBlogs(newBlogs)
+
+      if (likedBlog) {
+        showNotification({ success: true, text: `${blog.title} liked` })
+      } else {
+        showNotification({ success: false, text: 'blog cannot be liked' })
+      }
+    } catch {
+      console.log('blog cannot be liked')
+      showNotification({ success: false, text: 'blog cannot be liked' })
+    }
+  }
+
 
   return user ?
     (
@@ -110,6 +129,7 @@ const App = () => {
           user={user}
           blogs={blogs}
           logout={logout}
+          likeBlog={likeBlog}
         />
       </div>
     ) :
