@@ -10,7 +10,7 @@ import loginService from './services/login'
 import Togglable from './components/Togglable'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const [blogs, setBlogsFinal] = useState([])
   // authentication
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -18,6 +18,10 @@ const App = () => {
   // blog submission
   const [notification, setNotification] = useState({})
   const [showingNotification, setShowingNotification] = useState(false)
+
+  const setBlogs = blogArray => {
+    setBlogsFinal(blogArray.sort((b1, b2) => b2.likes - b1.likes))
+  }
 
   const newBlogFormTogglable = useRef()
   const newBlogForm = useRef()
