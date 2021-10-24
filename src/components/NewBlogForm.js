@@ -57,4 +57,6 @@ const NewBlogForm = React.forwardRef((props, ref) => {
   )
 })
 
+NewBlogForm.displayName = 'NewBlogForm'
+
 export default NewBlogForm
