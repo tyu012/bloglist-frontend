@@ -87,7 +87,7 @@ const App = () => {
     try {
       const blog = await blogService.submit(newBlog)
       console.log('blog submitted', blog)
-      setBlogs(blogs.concat(blog))
+      setBlogs(blogs.concat({ ...blog, user: user })) /* Workaround to save user data */
 
       if (blog) {
         showNotification({ success: true, text: `${blog.title} added` })
@@ -102,11 +102,20 @@ const App = () => {
 
   const likeBlog = async blog => {
     try {
-      console.log(blogs)
+      // Workaround to save user data
+      console.log('liking', blog)
+      const likedBlogUser = blog.user
+
       const likedBlog = await blogService.like(blog)
       console.log('blog liked', likedBlog)
-      const newBlogs = blogs.map(b => b === blog ? likedBlog : b)
+      const newBlogs = blogs.map(b =>
+        b === blog
+          ? { ...likedBlog, user: likedBlogUser } /* Workaround to save user data */
+          : b
+      )
+      console.log('newBlogs', newBlogs)
       setBlogs(newBlogs)
+      console.log(blogs)
 
       if (likedBlog) {
         showNotification({ success: true, text: `${blog.title} liked` })

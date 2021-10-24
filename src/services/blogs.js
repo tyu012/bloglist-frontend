@@ -30,6 +30,7 @@ const like = async blog => {
   }
 
   const response = await axios.put(`${baseUrl}/${blog.id}`, newBlog, config)
+  console.log(response.data)
   return response.data
 }
 
