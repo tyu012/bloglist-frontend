@@ -8,7 +8,7 @@ const ActiveUserStatus = ({ user, logout }) => (
 )
 
 const BlogList = props => {
-  const { user, blogs, logout, likeBlog } = props
+  const { user, blogs, logout, likeBlog, removeBlog } = props
 
   return (
     <div>
@@ -18,7 +18,13 @@ const BlogList = props => {
       />
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          user={user}
+          likeBlog={likeBlog}
+          removeBlog={removeBlog}
+        />
       )}
     </div>
   )

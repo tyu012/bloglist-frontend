@@ -10,7 +10,7 @@ import loginService from './services/login'
 import Togglable from './components/Togglable'
 
 const App = () => {
-  const [blogs, setBlogsFinal] = useState([])
+  const [blogs, setBlogsFinal] = useState([]) /* do not directly use setBlogsFinal */
   // authentication
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -103,21 +103,34 @@ const App = () => {
   const likeBlog = async blog => {
     try {
       // Workaround to save user data
-      console.log('liking', blog)
       const likedBlogUser = blog.user
 
       const likedBlog = await blogService.like(blog)
-      console.log('blog liked', likedBlog)
       const newBlogs = blogs.map(b =>
         b === blog
           ? { ...likedBlog, user: likedBlogUser } /* Workaround to save user data */
           : b
       )
-      console.log('newBlogs', newBlogs)
       setBlogs(newBlogs)
-      console.log(blogs)
 
       if (likedBlog) {
+        showNotification({ success: true, text: `${blog.title} liked` })
+      } else {
+        showNotification({ success: false, text: 'blog cannot be liked' })
+      }
+    } catch {
+      console.log('blog cannot be liked')
+      showNotification({ success: false, text: 'blog cannot be liked' })
+    }
+  }
+
+  const removeBlog = async blog => {
+    try {
+      const deletedBlog = await blogService.deleteBlog(blog)
+      const newBlogs = blogs.filter(b => b !== blog)
+      setBlogs(newBlogs)
+
+      if (deletedBlog) {
         showNotification({ success: true, text: `${blog.title} liked` })
       } else {
         showNotification({ success: false, text: 'blog cannot be liked' })
@@ -143,6 +156,7 @@ const App = () => {
           blogs={blogs}
           logout={logout}
           likeBlog={likeBlog}
+          removeBlog={removeBlog}
         />
       </div>
     ) :

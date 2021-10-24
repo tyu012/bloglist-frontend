@@ -1,19 +1,29 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, likeBlog }) => {
+const Blog = ({ blog, user, likeBlog, removeBlog }) => {
   const [detailed, setDetailed] = useState(false)
 
   const toggleDetail = event => {
     event.preventDefault()
     setDetailed(!detailed)
   }
-  
+
   const handleLike = async event => {
     event.preventDefault()
     await likeBlog(blog)
   }
 
+  const handleRemove = async event => {
+    event.preventDefault()
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      await removeBlog(blog)
+    }
+  }
+
+  const isPoster = () => user.username === blog.user.username
+
   const showWhenDetailed = { display: detailed ? '' : 'none' }
+  const showToPosterWhenDetailed = { display: detailed && isPoster() ? '' : 'none' }
 
   const blogStyle = {
     paddingTop: 10,
@@ -41,6 +51,10 @@ const Blog = ({ blog, likeBlog }) => {
 
       <div style={showWhenDetailed}>
         {blog.user.name}
+      </div>
+
+      <div style={showToPosterWhenDetailed}>
+        <button onClick={handleRemove}>remove</button>
       </div>
     </div>
   )
