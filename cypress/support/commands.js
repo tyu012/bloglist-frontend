@@ -40,12 +40,12 @@ Cypress.Commands.add('createUser', ({ username, name, password }) => {
   })
 })
 
-Cypress.Commands.add('createBlog', ({ title, author, url }) => {
+Cypress.Commands.add('createBlog', ({ title, author, url, likes }) => {
   const currentUser = JSON.parse(localStorage.getItem('currentBloglistUser'))
   cy.request({
     method: 'POST',
     url: 'http://localhost:3003/api/blogs',
-    body: { title, author, url },
+    body: { title, author, url, likes },
     headers: { Authorization: `bearer ${currentUser.token}` }
   })
 })

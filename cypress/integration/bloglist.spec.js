@@ -36,6 +36,8 @@ describe('Bloglist app', function () {
 
   describe('When logged in', function () {
     beforeEach(function () {
+      cy.request('POST', 'http://localhost:3003/api/testing/reset-blogs')
+      cy.visit('http://localhost:3000')
       cy.login({ username: 'hellas', password: 'secret' })
     })
 
@@ -65,7 +67,39 @@ describe('Bloglist app', function () {
 
       it('Poster can delete a blog', function () {
         cy.get('.basicBlogInfo > button').click()
-        cy.contains('delete').click()
+        cy.contains('remove').click()
+      })
+
+      describe('When multiple blogs exist', function () {
+        beforeEach(function () {
+          cy.createBlog({
+            title: 'More liked blog',
+            author: 'John Appleseed',
+            url: 'https://a.example.com',
+            likes: 10
+          }).then(() => {
+            cy.createBlog({
+              title: 'Most liked blog',
+              author: 'John Appleseed',
+              url: 'https://b.example.com',
+              likes: 100
+            })
+          }).then(() => {
+            cy.reload()
+          })
+        })
+
+        it('Blogs are sorted by descending number of likes', function () {
+          cy.get('.basicBlogInfo > button').click({ multiple: true })
+          cy.get('.blogLikes > span')
+            .then(blogLikesText => {
+              const blogLikes = blogLikesText.map((_, value) =>
+                parseInt(value.textContent))
+              for (let i = 0; i < blogLikes.length - 1; i++) {
+                assert.isAtMost(blogLikes[i + 1], blogLikes[i])
+              }
+            })
+        })
       })
     })
   })

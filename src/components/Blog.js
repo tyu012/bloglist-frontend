@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 const Blog = ({ blog, user, likeBlog, removeBlog }) => {
+  console.log(blog)
   const [detailed, setDetailed] = useState(false)
 
   const toggleDetail = event => {
@@ -46,8 +47,8 @@ const Blog = ({ blog, user, likeBlog, removeBlog }) => {
           {blog.url}
         </div>
 
-        <div>
-          likes {blog.likes}
+        <div className="blogLikes">
+          likes <span>{blog.likes}</span>
           <button onClick={handleLike}>like</button>
         </div>
 
