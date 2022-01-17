@@ -9,15 +9,20 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
 
+import { useSelector, useDispatch } from 'react-redux'
+
+import { showNotification } from './reducers/notificationReducer'
+
 const App = () => {
   const [blogs, setBlogsFinal] = useState([]) /* do not directly use setBlogsFinal */
   // authentication
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  // blog submission
-  const [notification, setNotification] = useState({})
-  const [showingNotification, setShowingNotification] = useState(false)
+  // notification state
+  const notification = useSelector(state => state.notification)
+  // redux dispatch
+  const dispatch = useDispatch()
 
   const setBlogs = blogArray => {
     setBlogsFinal(blogArray.sort((b1, b2) => b2.likes - b1.likes))
@@ -43,15 +48,6 @@ const App = () => {
     )
   }, [])
 
-  const showNotification = contents => {
-    setNotification(contents)
-    setShowingNotification(true)
-    setTimeout(() => {
-      setShowingNotification(false)
-      setNotification({})
-    }, 2500)
-  }
-
   const handleLogin = async event => {
     event.preventDefault()
 
@@ -64,10 +60,14 @@ const App = () => {
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
-      showNotification({ success: true, text: `logged in as ${user.username}` })
+      dispatch(
+        showNotification({ success: true, text: `logged in as ${user.username}` })
+      )
     } catch (exception) {
       console.log('login failed')
-      showNotification({ success: false, text: 'wrong username or password' })
+      dispatch(
+        showNotification({ success: false, text: 'wrong username or password' })
+      )
     }
   }
 
@@ -80,7 +80,9 @@ const App = () => {
     newBlogForm.current.setUrl('')
 
     window.localStorage.removeItem('currentBloglistUser')
-    showNotification({ success: true, text: 'logged out' })
+    dispatch(
+      showNotification({ success: true, text: 'logged out' })
+    )
   }
 
   const submitBlog = async newBlog => {
@@ -90,13 +92,19 @@ const App = () => {
       setBlogs(blogs.concat({ ...blog, user: user })) /* Workaround to save user data */
 
       if (blog) {
-        showNotification({ success: true, text: `${blog.title} added` })
+        dispatch(
+          showNotification({ success: true, text: `${blog.title} added` })
+        )
       } else {
-        showNotification({ success: false, text: 'blog creation failed' })
+        dispatch(
+          showNotification({ success: false, text: 'blog creation failed' })
+        )
       }
     } catch {
       console.log('blog submission failed')
-      showNotification({ success: false, text: 'blog creation failed' })
+      dispatch(
+        showNotification({ success: false, text: 'blog creation failed' })
+      )
     }
   }
 
@@ -114,13 +122,19 @@ const App = () => {
       setBlogs(newBlogs)
 
       if (likedBlog) {
-        showNotification({ success: true, text: `${blog.title} liked` })
+        dispatch(
+          showNotification({ success: true, text: `${blog.title} liked` })
+        )
       } else {
-        showNotification({ success: false, text: 'blog cannot be liked' })
+        dispatch(
+          showNotification({ success: false, text: 'blog cannot be liked' })
+        )
       }
     } catch {
       console.log('blog cannot be liked')
-      showNotification({ success: false, text: 'blog cannot be liked' })
+      dispatch(
+        showNotification({ success: false, text: 'blog cannot be liked' })
+      )
     }
   }
 
@@ -131,13 +145,19 @@ const App = () => {
       setBlogs(newBlogs)
 
       if (deletedBlog) {
-        showNotification({ success: true, text: `${blog.title} liked` })
+        dispatch(
+          showNotification({ success: true, text: `${blog.title} liked` })
+        )
       } else {
-        showNotification({ success: false, text: 'blog cannot be liked' })
+        dispatch(
+          showNotification({ success: false, text: 'blog cannot be liked' })
+        )
       }
     } catch {
       console.log('blog cannot be liked')
-      showNotification({ success: false, text: 'blog cannot be liked' })
+      dispatch(
+        showNotification({ success: false, text: 'blog cannot be liked' })
+      )
     }
   }
 
@@ -146,7 +166,7 @@ const App = () => {
     (
       <div>
         <h2>Blogs</h2>
-        <Notification contents={notification} isShowing={showingNotification} />
+        <Notification {...notification} />
         <Togglable buttonLabel="create new blog" ref={newBlogFormTogglable}>
           <h3>Create new</h3>
           <NewBlogForm submitBlog={submitBlog} ref={newBlogForm} />
@@ -163,7 +183,7 @@ const App = () => {
     (
       <div>
         <h2>Login</h2>
-        <Notification contents={notification} isShowing={showingNotification} />
+        <Notification {...notification} />
         <LoginForm
           handleLogin={handleLogin}
           username={username}

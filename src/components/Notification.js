@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Notification = ({ contents, isShowing }) => {
-  const { text } = contents /* success not implemented */
+  const text = contents ? contents.text : null
 
   if (isShowing) {
     return (
