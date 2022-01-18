@@ -1,4 +1,5 @@
 import BlogService from '../services/blogs'
+import { showNotification } from './notificationReducer'
 
 const blogReducer = (state = [], action) => {
   switch (action.type) {
@@ -6,6 +7,11 @@ const blogReducer = (state = [], action) => {
       return action.data
     case 'CREATE_BLOG':
       return state.concat(action.data)
+    case 'LIKE_BLOG':
+      return state.map(b => b.id === action.data.id
+        ? { ...b, likes: b.likes + 1 }
+        : b
+      )
     default:
       return state
   }
@@ -36,6 +42,25 @@ export const createBlog = blog => {
   return dispatch => {
     dispatch({
       type: 'CREATE_BLOG',
+      data: blog
+    })
+  }
+}
+
+export const likeBlog = blog => {
+  return async dispatch => {
+    const likedBlog = await BlogService.like(blog)
+    if (!likedBlog) {
+      dispatch(
+        showNotification({ success: false, text: `${blog.title} does not exist` })
+      )
+    } else {
+      dispatch(
+        showNotification({ success: true, text: `${blog.title} liked` })
+      )
+    }
+    dispatch({
+      type: 'LIKE_BLOG',
       data: blog
     })
   }

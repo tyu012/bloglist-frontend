@@ -12,7 +12,9 @@ import Togglable from './components/Togglable'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { showNotification } from './reducers/notificationReducer'
-import { initializeBlogs, setBlogs, createBlog } from './reducers/blogReducer'
+import {
+  initializeBlogs, setBlogs, createBlog, likeBlog
+} from './reducers/blogReducer'
 
 const App = () => {
   // blogs
@@ -87,7 +89,7 @@ const App = () => {
     )
   }
 
-  const submitBlog = async newBlog => {
+  const handleSubmitBlog = async newBlog => {
     try {
       const blog = await blogService.submit(newBlog)
       console.log('blog submitted', blog)
@@ -112,34 +114,8 @@ const App = () => {
     }
   }
 
-  const likeBlog = async blog => {
-    try {
-      // Workaround to save user data
-      const likedBlogUser = blog.user
-
-      const likedBlog = await blogService.like(blog)
-      const newBlogs = blogs.map(b =>
-        b === blog
-          ? { ...likedBlog, user: likedBlogUser } /* Workaround to save user data */
-          : b
-      )
-      dispatch(setBlogs(newBlogs))
-
-      if (likedBlog) {
-        dispatch(
-          showNotification({ success: true, text: `${blog.title} liked` })
-        )
-      } else {
-        dispatch(
-          showNotification({ success: false, text: 'blog cannot be liked' })
-        )
-      }
-    } catch {
-      console.log('blog cannot be liked')
-      dispatch(
-        showNotification({ success: false, text: 'blog cannot be liked' })
-      )
-    }
+  const handleLikeBlog = async blog => {
+    dispatch(likeBlog(blog))
   }
 
   const removeBlog = async blog => {
@@ -173,13 +149,13 @@ const App = () => {
         <Notification {...notification} />
         <Togglable buttonLabel="create new blog" ref={newBlogFormTogglable}>
           <h3>Create new</h3>
-          <NewBlogForm submitBlog={submitBlog} ref={newBlogForm} />
+          <NewBlogForm submitBlog={handleSubmitBlog} ref={newBlogForm} />
         </Togglable>
         <BlogList
           user={user}
           blogs={blogs}
           logout={logout}
-          likeBlog={likeBlog}
+          likeBlog={handleLikeBlog}
           removeBlog={removeBlog}
         />
       </div>
