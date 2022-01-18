@@ -13,7 +13,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { showNotification } from './reducers/notificationReducer'
 import {
-  initializeBlogs, setBlogs, createBlog, likeBlog
+  initializeBlogs, createBlog, likeBlog, deleteBlog
 } from './reducers/blogReducer'
 
 const App = () => {
@@ -118,27 +118,8 @@ const App = () => {
     dispatch(likeBlog(blog))
   }
 
-  const removeBlog = async blog => {
-    try {
-      const deletedBlog = await blogService.deleteBlog(blog)
-      const newBlogs = blogs.filter(b => b !== blog)
-      dispatch(setBlogs(newBlogs))
-
-      if (deletedBlog) {
-        dispatch(
-          showNotification({ success: true, text: `${blog.title} liked` })
-        )
-      } else {
-        dispatch(
-          showNotification({ success: false, text: 'blog cannot be liked' })
-        )
-      }
-    } catch {
-      console.log('blog cannot be liked')
-      dispatch(
-        showNotification({ success: false, text: 'blog cannot be liked' })
-      )
-    }
+  const handleRemoveBlog = async blog => {
+    dispatch(deleteBlog(blog))
   }
 
 
@@ -156,7 +137,7 @@ const App = () => {
           blogs={blogs}
           logout={logout}
           likeBlog={handleLikeBlog}
-          removeBlog={removeBlog}
+          removeBlog={handleRemoveBlog}
         />
       </div>
     ) :

@@ -1,4 +1,4 @@
-import BlogService from '../services/blogs'
+import blogService from '../services/blogs'
 import { showNotification } from './notificationReducer'
 
 const byDescendingLikes = (b1, b2) => b2.likes - b1.likes
@@ -16,6 +16,9 @@ const blogReducer = (state = [], action) => {
           : b
         )
         .sort(byDescendingLikes)
+    case 'DELETE_BLOG':
+      return state
+        .filter(b => b.id !== action.data.id)
     default:
       return state
   }
@@ -23,7 +26,7 @@ const blogReducer = (state = [], action) => {
 
 export const initializeBlogs = () => {
   return async dispatch => {
-    const blogs = (await BlogService.getAll())
+    const blogs = (await blogService.getAll())
       .sort(byDescendingLikes)
     dispatch({
       type: 'SET_BLOGS',
@@ -53,7 +56,7 @@ export const createBlog = blog => {
 
 export const likeBlog = blog => {
   return async dispatch => {
-    const likedBlog = await BlogService.like(blog)
+    const likedBlog = await blogService.like(blog)
     if (!likedBlog) {
       dispatch(
         showNotification({ success: false, text: `${blog.title} does not exist` })
@@ -65,6 +68,19 @@ export const likeBlog = blog => {
     }
     dispatch({
       type: 'LIKE_BLOG',
+      data: blog
+    })
+  }
+}
+
+export const deleteBlog = blog => {
+  return async dispatch => {
+    await blogService.deleteBlog(blog)
+    dispatch(
+      showNotification({ success: true, text: `${blog.title} deleted` })
+    )
+    dispatch({
+      type: 'DELETE_BLOG',
       data: blog
     })
   }
