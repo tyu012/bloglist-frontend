@@ -1,6 +1,8 @@
 import BlogService from '../services/blogs'
 import { showNotification } from './notificationReducer'
 
+const byDescendingLikes = (b1, b2) => b2.likes - b1.likes
+
 const blogReducer = (state = [], action) => {
   switch (action.type) {
     case 'SET_BLOGS':
@@ -8,10 +10,12 @@ const blogReducer = (state = [], action) => {
     case 'CREATE_BLOG':
       return state.concat(action.data)
     case 'LIKE_BLOG':
-      return state.map(b => b.id === action.data.id
-        ? { ...b, likes: b.likes + 1 }
-        : b
-      )
+      return state
+        .map(b => b.id === action.data.id
+          ? { ...b, likes: b.likes + 1 }
+          : b
+        )
+        .sort(byDescendingLikes)
     default:
       return state
   }
@@ -20,7 +24,7 @@ const blogReducer = (state = [], action) => {
 export const initializeBlogs = () => {
   return async dispatch => {
     const blogs = (await BlogService.getAll())
-      .sort((b1, b2) => b2.likes - b1.likes)
+      .sort(byDescendingLikes)
     dispatch({
       type: 'SET_BLOGS',
       data: blogs,
@@ -30,7 +34,7 @@ export const initializeBlogs = () => {
 
 export const setBlogs = blogs => {
   return dispatch => {
-    const sortedBlogs = blogs.sort((b1, b2) => b2.likes - b1.likes)
+    const sortedBlogs = blogs.sort(byDescendingLikes)
     dispatch({
       type: 'SET_BLOGS',
       data: sortedBlogs

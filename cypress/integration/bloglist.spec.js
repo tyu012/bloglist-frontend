@@ -77,13 +77,13 @@ describe('Bloglist app', function () {
             title: 'More liked blog',
             author: 'John Appleseed',
             url: 'https://a.example.com',
-            likes: 10
+            likes: 5
           }).then(() => {
             cy.createBlog({
               title: 'Most liked blog',
               author: 'John Appleseed',
               url: 'https://b.example.com',
-              likes: 100
+              likes: 10
             })
           }).then(() => {
             cy.reload()
