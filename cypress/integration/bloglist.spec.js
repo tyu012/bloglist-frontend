@@ -47,6 +47,7 @@ describe('Bloglist app', function () {
       cy.get('#blogFormAuthor').type('John Appleseed')
       cy.get('#blogFormUrl').type('https://example.com')
       cy.get('#blogFormSubmit').contains('create').click()
+      cy.get('.basicBlogInfo')
     })
 
     describe('When blog exists', function () {

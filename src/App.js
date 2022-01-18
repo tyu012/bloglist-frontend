@@ -12,9 +12,13 @@ import Togglable from './components/Togglable'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { showNotification } from './reducers/notificationReducer'
+import { initializeBlogs, setBlogs, createBlog } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogsFinal] = useState([]) /* do not directly use setBlogsFinal */
+  // blogs
+  // const [_blogs, setBlogsFinal] = useState([]) /* do not directly use setBlogsFinal */
+  // _blogs
+  const blogs = useSelector(state => state.blogs)
   // authentication
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -24,9 +28,9 @@ const App = () => {
   // redux dispatch
   const dispatch = useDispatch()
 
-  const setBlogs = blogArray => {
-    setBlogsFinal(blogArray.sort((b1, b2) => b2.likes - b1.likes))
-  }
+  // const setBlogs = blogArray => {
+  //   setBlogsFinal(blogArray.sort((b1, b2) => b2.likes - b1.likes))
+  // }
 
   const newBlogFormTogglable = useRef()
   const newBlogForm = useRef()
@@ -43,9 +47,7 @@ const App = () => {
       console.log('user not found')
     }
 
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    dispatch(initializeBlogs())
   }, [])
 
   const handleLogin = async event => {
@@ -89,7 +91,9 @@ const App = () => {
     try {
       const blog = await blogService.submit(newBlog)
       console.log('blog submitted', blog)
-      setBlogs(blogs.concat({ ...blog, user: user })) /* Workaround to save user data */
+      dispatch(
+        dispatch(createBlog({ ...blog, user: user })) /* Workaround to save user data */
+      )
 
       if (blog) {
         dispatch(
@@ -119,7 +123,7 @@ const App = () => {
           ? { ...likedBlog, user: likedBlogUser } /* Workaround to save user data */
           : b
       )
-      setBlogs(newBlogs)
+      dispatch(setBlogs(newBlogs))
 
       if (likedBlog) {
         dispatch(
@@ -142,7 +146,7 @@ const App = () => {
     try {
       const deletedBlog = await blogService.deleteBlog(blog)
       const newBlogs = blogs.filter(b => b !== blog)
-      setBlogs(newBlogs)
+      dispatch(setBlogs(newBlogs))
 
       if (deletedBlog) {
         dispatch(
