@@ -45,12 +45,45 @@ export const setBlogs = blogs => {
   }
 }
 
+/**
+ * Adds new blog to store only
+ */
 export const createBlog = blog => {
   return dispatch => {
     dispatch({
       type: 'CREATE_BLOG',
       data: blog
     })
+  }
+}
+
+/**
+ * Adds new blog to backend and store
+ */
+export const submitBlog = (newBlog, user) => {
+  return async dispatch => {
+    try {
+      const blog = await blogService.submit(newBlog)
+      console.log('blog submitted', blog)
+      dispatch(
+        dispatch(createBlog({ ...blog, user: user })) /* Workaround to save user data */
+      )
+
+      if (blog) {
+        dispatch(
+          showNotification({ success: true, text: `${blog.title} added` })
+        )
+      } else {
+        dispatch(
+          showNotification({ success: false, text: 'blog creation failed' })
+        )
+      }
+    } catch {
+      console.log('blog submission failed')
+      dispatch(
+        showNotification({ success: false, text: 'blog creation failed' })
+      )
+    }
   }
 }
 
