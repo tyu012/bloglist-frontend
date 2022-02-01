@@ -4,7 +4,6 @@ import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
-
 import Togglable from './components/Togglable'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -15,6 +14,10 @@ import {
 import {
   checkIfUserLoggedIn, login, logout
 } from './reducers/userReducer'
+
+import {
+  BrowserRouter, Switch, Route,
+} from 'react-router-dom'
 
 const App = () => {
   // blogs
@@ -68,21 +71,30 @@ const App = () => {
 
   return user ?
     (
-      <div>
-        <h2>Blogs</h2>
-        <Notification {...notification} />
-        <Togglable buttonLabel="create new blog" ref={newBlogFormTogglable}>
-          <h3>Create new</h3>
-          <NewBlogForm submitBlog={handleSubmitBlog} ref={newBlogForm} />
-        </Togglable>
-        <BlogList
-          user={user}
-          blogs={blogs}
-          logout={handleLogout}
-          likeBlog={handleLikeBlog}
-          removeBlog={handleRemoveBlog}
-        />
-      </div>
+      <BrowserRouter>
+        <div>
+          <h2>Blogs</h2>
+          <Notification {...notification} />
+          <Switch>
+            <Route path="/users">
+              <div>Users</div>
+            </Route>
+            <Route path="/">
+              <Togglable buttonLabel="create new blog" ref={newBlogFormTogglable}>
+                <h3>Create new</h3>
+                <NewBlogForm submitBlog={handleSubmitBlog} ref={newBlogForm} />
+              </Togglable>
+              <BlogList
+                user={user}
+                blogs={blogs}
+                logout={handleLogout}
+                likeBlog={handleLikeBlog}
+                removeBlog={handleRemoveBlog}
+              />
+            </Route>
+          </Switch>
+        </div>
+      </BrowserRouter>
     ) :
     (
       <div>
