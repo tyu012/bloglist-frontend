@@ -5,6 +5,7 @@ import BlogList from './components/BlogList'
 import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import Users from './components/Users'
 
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -77,7 +78,8 @@ const App = () => {
           <Notification {...notification} />
           <Switch>
             <Route path="/users">
-              <div>Users</div>
+              <h3>Users</h3>
+              <Users />
             </Route>
             <Route path="/">
               <Togglable buttonLabel="create new blog" ref={newBlogFormTogglable}>
