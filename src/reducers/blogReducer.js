@@ -65,9 +65,7 @@ export const submitBlog = (newBlog, user) => {
     try {
       const blog = await blogService.submit(newBlog)
       console.log('blog submitted', blog)
-      dispatch(
-        dispatch(createBlog({ ...blog, user: user })) /* Workaround to save user data */
-      )
+      dispatch(createBlog({ ...blog, user: user })) /* Workaround to save user data */
 
       if (blog) {
         dispatch(

@@ -1,14 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const ActiveUserStatus = ({ user, logout }) => (
-  <div>
-    <p>{user.name} logged in<button onClick={logout}>logout</button></p>
-  </div>
-)
-
 const BlogList = props => {
-  const { user, blogs, logout } = props
+  const { blogs } = props
 
   const blogStyle = {
     paddingTop: 10,
@@ -20,11 +14,6 @@ const BlogList = props => {
 
   return (
     <div>
-      <ActiveUserStatus
-        user={user}
-        logout={logout}
-      />
-
       {blogs.map(blog =>
         <div key={blog.id} style={blogStyle}>
           <Link to={`/blogs/${blog.id}`}>

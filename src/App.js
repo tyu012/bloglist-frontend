@@ -8,6 +8,7 @@ import Togglable from './components/Togglable'
 import Users from './components/Users'
 import UserDetailed from './components/UserDetailed'
 import Blog from './components/Blog'
+import Navbar from './components/Navbar'
 
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -87,7 +88,9 @@ const App = () => {
   return user ?
     (
       <div>
+        <Navbar user={user} logout={handleLogout} />
         <h2>Blogs</h2>
+
         <Notification {...notification} />
         <Switch>
           <Route path="/users/:id">
@@ -114,9 +117,7 @@ const App = () => {
               <NewBlogForm submitBlog={handleSubmitBlog} ref={newBlogForm} />
             </Togglable>
             <BlogList
-              user={user}
               blogs={blogs}
-              logout={handleLogout}
             />
           </Route>
         </Switch>
