@@ -6,6 +6,8 @@ import NewBlogForm from './components/NewBlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
+import UserDetailed from './components/UserDetailed'
+import Blog from './components/Blog'
 
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -17,8 +19,9 @@ import {
 } from './reducers/userReducer'
 
 import {
-  BrowserRouter, Switch, Route,
+  Switch, Route, useRouteMatch
 } from 'react-router-dom'
+
 
 const App = () => {
   // blogs
@@ -29,11 +32,22 @@ const App = () => {
   const user = useSelector(state => state.user)
   // notification state
   const notification = useSelector(state => state.notification)
+  // all users
+  const users = useSelector(state => state.users)
   // redux dispatch
   const dispatch = useDispatch()
 
   const newBlogFormTogglable = useRef()
   const newBlogForm = useRef()
+
+  const matchingUserId = useRouteMatch('/users/:id')
+  const userDetailedId = matchingUserId
+    ? users.find(u => u.id === matchingUserId.params.id)
+    : null
+  const matchingBlogId = useRouteMatch('/blogs/:id')
+  const matchingBlog = matchingBlogId
+    ? blogs.find(b => b.id === matchingBlogId.params.id)
+    : null
 
   useEffect(() => {
     dispatch(checkIfUserLoggedIn())
@@ -72,31 +86,41 @@ const App = () => {
 
   return user ?
     (
-      <BrowserRouter>
-        <div>
-          <h2>Blogs</h2>
-          <Notification {...notification} />
-          <Switch>
-            <Route path="/users">
-              <h3>Users</h3>
-              <Users />
-            </Route>
-            <Route path="/">
-              <Togglable buttonLabel="create new blog" ref={newBlogFormTogglable}>
-                <h3>Create new</h3>
-                <NewBlogForm submitBlog={handleSubmitBlog} ref={newBlogForm} />
-              </Togglable>
-              <BlogList
-                user={user}
-                blogs={blogs}
-                logout={handleLogout}
-                likeBlog={handleLikeBlog}
-                removeBlog={handleRemoveBlog}
-              />
-            </Route>
-          </Switch>
-        </div>
-      </BrowserRouter>
+      <div>
+        <h2>Blogs</h2>
+        <Notification {...notification} />
+        <Switch>
+          <Route path="/users/:id">
+            <UserDetailed user={userDetailedId} />
+          </Route>
+
+          <Route path="/users">
+            <h3>Users</h3>
+            <Users />
+          </Route>
+
+          <Route path="/blogs/:id">
+            <Blog
+              blog={matchingBlog}
+              user={user}
+              likeBlog={handleLikeBlog}
+              removeblog={handleRemoveBlog}
+            />
+          </Route>
+
+          <Route path="/">
+            <Togglable buttonLabel="create new blog" ref={newBlogFormTogglable}>
+              <h3>Create new</h3>
+              <NewBlogForm submitBlog={handleSubmitBlog} ref={newBlogForm} />
+            </Togglable>
+            <BlogList
+              user={user}
+              blogs={blogs}
+              logout={handleLogout}
+            />
+          </Route>
+        </Switch>
+      </div>
     ) :
     (
       <div>

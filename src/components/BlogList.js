@@ -1,5 +1,5 @@
 import React from 'react'
-import Blog from './Blog'
+import { Link } from 'react-router-dom'
 
 const ActiveUserStatus = ({ user, logout }) => (
   <div>
@@ -8,7 +8,15 @@ const ActiveUserStatus = ({ user, logout }) => (
 )
 
 const BlogList = props => {
-  const { user, blogs, logout, likeBlog, removeBlog } = props
+  const { user, blogs, logout } = props
+
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
 
   return (
     <div>
@@ -18,13 +26,11 @@ const BlogList = props => {
       />
 
       {blogs.map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          user={user}
-          likeBlog={likeBlog}
-          removeBlog={removeBlog}
-        />
+        <div key={blog.id} style={blogStyle}>
+          <Link to={`/blogs/${blog.id}`}>
+            {blog.title}
+          </Link>
+        </div>
       )}
     </div>
   )
