@@ -3,7 +3,7 @@ const initialState = {
     text: 'Welcome to Bloglist!',
     success: true,
   },
-  isShowing: true
+  isShowing: false
 }
 
 // WIP: fix the bug for multiple notifications disappearing too soon

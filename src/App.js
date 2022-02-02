@@ -20,11 +20,12 @@ import {
 } from './reducers/userReducer'
 
 import {
-  Switch, Route, useRouteMatch
+  Switch, Route, useRouteMatch, useHistory
 } from 'react-router-dom'
 
 
 const App = () => {
+  const history = useHistory()
   // blogs
   const blogs = useSelector(state => state.blogs)
   // authentication
@@ -64,9 +65,10 @@ const App = () => {
   const handleLogout = event => {
     event.preventDefault()
     dispatch(logout())
-    newBlogForm.current.setTitle('')
-    newBlogForm.current.setAuthor('')
-    newBlogForm.current.setUrl('')
+    // newBlogForm.current.setTitle('')
+    // newBlogForm.current.setAuthor('')
+    // newBlogForm.current.setUrl('')
+    history.push('/')
   }
 
   const handleSubmitBlog = async blog => {
@@ -125,15 +127,19 @@ const App = () => {
     ) :
     (
       <div>
-        <h2>Login</h2>
-        <Notification {...notification} />
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-        />
+        <Switch>
+          <Route path="/">
+            <h2>Login</h2>
+            <Notification {...notification} />
+            <LoginForm
+              handleLogin={handleLogin}
+              username={username}
+              setUsername={setUsername}
+              password={password}
+              setPassword={setPassword}
+            />
+          </Route>
+        </Switch>
       </div>
     )
 }
