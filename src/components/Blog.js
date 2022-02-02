@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { addComment } from '../reducers/blogReducer'
 
 const Blog = ({ blog, user, likeBlog, removeBlog }) => {
   if (!blog) {
@@ -42,21 +44,46 @@ const Blog = ({ blog, user, likeBlog, removeBlog }) => {
         <button onClick={handleRemove}>remove</button>
       </div>
       <div>
-        <Comments comments={blog.comments} />
+        <Comments comments={blog.comments} blogId={blog.id} />
       </div>
     </div>
   )
 }
 
-const Comments = ({ comments }) => {
+const Comments = ({ comments, blogId }) => {
   return (
     <div>
       <h4>comments</h4>
+      <CommentForm blogId={blogId} />
       <ul>
         {comments.map((c, i) =>
           <li key={i}>{c}</li>
         )}
       </ul>
+    </div>
+  )
+}
+
+const CommentForm = ({ blogId }) => {
+  const dispatch = useDispatch()
+  const [newComment, setNewComment] = useState('')
+
+  const handleCommentSubmission = event => {
+    event.preventDefault()
+    dispatch(addComment(newComment, blogId))
+    setNewComment('')
+  }
+
+  return (
+    <div>
+      <form onSubmit={handleCommentSubmission}>
+        <input
+          type="text"
+          value={newComment}
+          onChange={({ target }) => setNewComment(target.value)}
+        />
+        <button type="submit">submit</button>
+      </form>
     </div>
   )
 }
