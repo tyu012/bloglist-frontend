@@ -1,11 +1,12 @@
 import React from 'react'
+import { Alert } from 'react-bootstrap'
 
 const Notification = ({ contents, isShowing }) => {
   const text = contents ? contents.text : null
 
   if (isShowing) {
     return (
-      <div>{text}</div>
+      <Alert>{text}</Alert>
     )
   } else {
     return (<div></div>)

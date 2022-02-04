@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateUsers } from '../reducers/usersReducer'
 import { Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 
 const Users = () => {
   const dispatch = useDispatch()
@@ -13,7 +14,7 @@ const Users = () => {
 
   return (
     <div>
-      <table>
+      <Table>
         <tbody>
           <tr>
             <th></th>
@@ -23,7 +24,7 @@ const Users = () => {
             <User name={u.name} blogs={u.blogs} key={u.id} id={u.id}/>
           )}
         </tbody>
-      </table>
+      </Table>
     </div>
   )
 }

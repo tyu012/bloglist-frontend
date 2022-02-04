@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addComment } from '../reducers/blogReducer'
+import { Button, Table } from 'react-bootstrap'
+import {
+  likeBlog, deleteBlog
+} from '../reducers/blogReducer'
 
-const Blog = ({ blog, user, likeBlog, removeBlog }) => {
+const Blog = ({ blog, user, }) => {
   if (!blog) {
     return (
       <p>
@@ -11,15 +15,17 @@ const Blog = ({ blog, user, likeBlog, removeBlog }) => {
     )
   }
 
+  const dispatch = useDispatch()
+
   const handleLike = async event => {
     event.preventDefault()
-    await likeBlog(blog)
+    dispatch(likeBlog(blog))
   }
 
-  const handleRemove = async event => {
+  const handleRemove = event => {
     event.preventDefault()
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await removeBlog(blog)
+      dispatch(deleteBlog(blog))
     }
   }
 
@@ -30,18 +36,30 @@ const Blog = ({ blog, user, likeBlog, removeBlog }) => {
   return (
     <div className="detailedBlogInfo">
       <h3>{blog.title}</h3>
-      <div>
-        <a href={'https://' + blog.url}>{blog.url}</a>
-      </div>
-      <div className="blogLikes">
-        {blog.likes} likes
-        <button onClick={handleLike}>like</button>
-      </div>
-      <div>
-        added by {blog.user.name}
-      </div>
+      <Table hover>
+        <tbody>
+          <tr>
+            <td colSpan={2}>
+              <a href={'https://' + blog.url}>{blog.url}</a>
+            </td>
+          </tr>
+          <tr className="blogLikes">
+            <td>
+              {blog.likes} likes
+            </td>
+            <td>
+              <Button onClick={handleLike}>like</Button>
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={2}>
+              added by {blog.user.name}
+            </td>
+          </tr>
+        </tbody>
+      </Table>
       <div style={showToPoster}>
-        <button onClick={handleRemove}>remove</button>
+        <Button variant="danger" onClick={handleRemove}>remove</Button>
       </div>
       <div>
         <Comments comments={blog.comments} blogId={blog.id} />

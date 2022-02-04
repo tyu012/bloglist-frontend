@@ -13,7 +13,7 @@ import Navbar from './components/Navbar'
 import { useSelector, useDispatch } from 'react-redux'
 
 import {
-  likeBlog, deleteBlog, submitBlog
+  submitBlog
 } from './reducers/blogReducer'
 import {
   checkIfUserLoggedIn, login, logout
@@ -78,18 +78,9 @@ const App = () => {
     newBlogForm.current.setUrl('')
   }
 
-  const handleLikeBlog = async blog => {
-    dispatch(likeBlog(blog))
-  }
-
-  const handleRemoveBlog = async blog => {
-    dispatch(deleteBlog(blog))
-  }
-
-
   return user ?
     (
-      <div>
+      <div className="container">
         <Navbar user={user} logout={handleLogout} />
         <h2>Blogs</h2>
 
@@ -108,8 +99,6 @@ const App = () => {
             <Blog
               blog={matchingBlog}
               user={user}
-              likeBlog={handleLikeBlog}
-              removeblog={handleRemoveBlog}
             />
           </Route>
 
@@ -126,7 +115,7 @@ const App = () => {
       </div>
     ) :
     (
-      <div>
+      <div className="container">
         <Switch>
           <Route path="/">
             <h2>Login</h2>
