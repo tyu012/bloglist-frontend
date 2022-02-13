@@ -82,7 +82,7 @@ const App = () => {
     (
       <div className="container">
         <Navbar user={user} logout={handleLogout} />
-        <h2>Blogs</h2>
+        <h2>Bloglist</h2>
 
         <Notification {...notification} />
         <Switch>
@@ -103,6 +103,7 @@ const App = () => {
           </Route>
 
           <Route path="/">
+            <h3>Blogs</h3>
             <Togglable buttonLabel="create new blog" ref={newBlogFormTogglable}>
               <h3>Create new</h3>
               <NewBlogForm submitBlog={handleSubmitBlog} ref={newBlogForm} />

@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addComment } from '../reducers/blogReducer'
-import { Button, Table } from 'react-bootstrap'
+import { Button, Table, Form } from 'react-bootstrap'
 import {
   likeBlog, deleteBlog
 } from '../reducers/blogReducer'
+import { useHistory } from 'react-router'
 
 const Blog = ({ blog, user, }) => {
   if (!blog) {
@@ -16,6 +17,7 @@ const Blog = ({ blog, user, }) => {
   }
 
   const dispatch = useDispatch()
+  const history = useHistory()
 
   const handleLike = async event => {
     event.preventDefault()
@@ -27,6 +29,7 @@ const Blog = ({ blog, user, }) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       dispatch(deleteBlog(blog))
     }
+    history.push('/')
   }
 
   const isPoster = () => user.username === blog.user.username
@@ -94,14 +97,16 @@ const CommentForm = ({ blogId }) => {
 
   return (
     <div>
-      <form onSubmit={handleCommentSubmission}>
-        <input
-          type="text"
-          value={newComment}
-          onChange={({ target }) => setNewComment(target.value)}
-        />
-        <button type="submit">submit</button>
-      </form>
+      <Form onSubmit={handleCommentSubmission}>
+        <Form.Group>
+          <Form.Control
+            type="text"
+            value={newComment}
+            onChange={({ target }) => setNewComment(target.value)}
+          />
+          <Button variant="primary" type="submit">submit</Button>
+        </Form.Group>
+      </Form>
     </div>
   )
 }
